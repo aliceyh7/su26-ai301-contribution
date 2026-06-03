@@ -1,19 +1,19 @@
-# Contribution [1]: Support for TorchSnapshot for efficient checkpoint saving and loading
+# Contribution [1]: llama-server hot swapping cvectors via API like LoRA adapters
 
 **Contribution Number:** [1]  
 **Student:** [Alice]  
-**Issue:** https://github.com/pytorch/ignite/issues/2752  
+**Issue:** https://github.com/ggml-org/llama.cpp/issues/10685  
 **Status:** [Phase I]
 
 ---
 
 ## Why I Chose This Issue
 
-I chose PyTorch Ignite issue #2752, "Support for TorchSnapshot for efficient checkpoint saving and loading," because it connects directly to my interest in machine learning systems and distributed training infrastructure. The issue proposes adding TorchSnapshot support to Ignite's existing checkpointing workflow, which seems like a meaningful contribution for users training larger PyTorch models.
+I chose llama.cpp issue #10685, "Feature Request: llama-server hot swapping cvectors via API like we can do with LoRA adapters now," because it connects directly to my interest in LLM systems, inference infrastructure, and model steering. The issue proposes exposing control-vector loading/unloading and scaling through the `llama-server` API, similar to the existing LoRA adapter API, so users can adjust model behavior without restarting the server.
 
-This issue stood out to me because it is more systems-oriented than a simple documentation or UI fix, but still has a reasonably bounded first implementation path. From reading the issue thread, I understand that TorchSnapshot is designed for memory-efficient checkpointing in distributed PyTorch workloads, and a possible contribution would be adding a `TorchSnapshotSaver` similar to Ignite's existing checkpoint save handlers. This matches my Python/PyTorch background while giving me a chance to learn more about production ML training workflows, checkpointing APIs, and how open-source ML libraries design extensible handler interfaces.
+This issue stood out to me because it has both practical product value and strong technical learning value. From reading the issue thread, I understand that control vectors can already be used through command-line flags, but changing their scale or toggling them currently requires restarting the server. A useful contribution would be to add API endpoints such as `GET /cvectors` and `POST /cvectors`, following the existing `/lora-adapters` pattern. This matches my interest in post-training-adjacent workflows, runtime model adaptation, and LLM serving systems, while giving me a chance to work in a widely used C/C++ AI codebase.
 
-I also liked that the issue is labeled `enhancement` and `help wanted`, has no obvious assignee or open pull request, and the comments provide useful context about how TorchSnapshot should behave in distributed settings. Since there was a recent comment asking whether the issue is still relevant, my plan is to first confirm the scope with the maintainers and then keep the contribution focused on a minimal save handler implementation with tests and documentation.
+I also liked that the issue is labeled `enhancement` and `good first issue`, has a clear user motivation, and provides a concrete possible implementation. The main risk is that someone previously commented that they planned to work on it, so I plan to confirm that there is no active PR or assignee before fully committing.
 
 ---
 
