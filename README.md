@@ -207,8 +207,9 @@ Implemented the feature on `fix-issue-10685`: added `GET /cvectors` and `POST /c
 AI usage was disclosed in the PR per the project's requirements.
 
 **Maintainer Feedback:**
-- [Date]: [Summary of feedback received]
-- [Date]: [How you addressed it]
+- Jun 18, 2026: PR opened and automatically routed to the `server` code-owners team for review; GitHub Actions labeled it `examples`, `python script changes`, and `server`.
+- Jun 18, 2026: @velartrill left a 👍 reaction on the PR description — no code review comments yet.
+- Jul 27, 2026 (current): No formal review has been posted and no one is assigned. The PR has been open for ~5.5 weeks with no requested changes. Next step if it stays quiet: leave a polite comment on the thread checking in, and re-verify the branch still applies cleanly against `upstream/master`.
 
 **Status:** Open - awaiting maintainer review
 
@@ -218,20 +219,21 @@ AI usage was disclosed in the PR per the project's requirements.
 
 ### Technical Skills Gained
 
-[What you learned technically]
+Working this issue gave me hands-on experience with a production-scale C++ inference server rather than a toy codebase. I learned how llama-server's runtime-adapter pattern works end-to-end — HTTP route registration in `server.cpp`, request-parsing helpers, task/result types, and JSON serialization — and how to extend that pattern consistently instead of inventing a parallel one. I also got much more comfortable with the C++ build toolchain (`cmake`, Metal backend detection) and with control vectors themselves: how they're generated from a base model, why the generating model's dimensions have to match the target model, and how `llama_set_adapter_cvec` differs from the LoRA equivalent at the engine level.
 
 ### Challenges Overcome
 
-[What was hard and how you solved it]
+Environment setup alone took real troubleshooting — no `cmake` installed, and no test model or control vector to validate against, so I had to build the whole test fixture myself (download a small Qwen model, generate my own control vector from it) before I could even reproduce the bug. The trickiest issue came during testing: a stray `llama-server` process from earlier manual testing was still bound to port 8080, so the pytest harness's health check silently passed against the wrong server and made my new tests look broken when they weren't. Killing the leftover process fixed it — a good reminder to always check what's actually listening on a port before trusting a test failure.
 
 ### What I'd Do Differently Next Time
 
-[Reflection on your process]
+I'd check for port conflicts and kill stray background processes before running the test suite, rather than after chasing a false failure. I'd also confirm earlier — before writing any code — that no one else was actively working on the issue, since the thread had a comment suggesting someone else might pick it up; I got lucky they hadn't opened a PR by the time mine was ready. Finally, I'd leave a short comment on the issue thread when I started implementation, both to signal I had it in progress and to give maintainers a heads-up before the PR landed.
 
 ---
 
 ## Resources Used
 
-- [Link to helpful documentation]
-- [Tutorial or Stack Overflow post that helped]
-- [GitHub issues or discussions that helped]
+- llama.cpp's existing `/lora-adapters` implementation (`tools/server/server.cpp`, `server-task.cpp`, `server-common.cpp`) — the reference pattern I mirrored for the new `/cvectors` endpoints.
+- [llama.cpp CONTRIBUTING.md](https://github.com/ggml-org/llama.cpp/blob/master/CONTRIBUTING.md) and the repo's `AGENTS.md` — coding-style conventions and the AI-usage disclosure requirement I followed when opening the PR.
+- Issue thread [ggml-org/llama.cpp#10685](https://github.com/ggml-org/llama.cpp/issues/10685) — the original feature request and prior discussion, including the note about a possible earlier claimant that I had to check before committing to the issue.
+- `tools/server/tests/unit/test_lora.py` — existing test pattern used as the model for the new `test_cvector.py`.
